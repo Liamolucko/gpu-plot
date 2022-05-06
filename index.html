@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>GPU Plotter</title>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            html {
+                width: 100%;
+                height: 100%;
+            }
+
+            body {
+                display: flex;
+                flex-flow: row nowrap;
+                margin: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+            #sidebar {
+                background-color: lightgrey;
+                /* don't let this get shrunk no matter what */
+                min-width: max-content;
+                padding: 8px;
+
+                display: flex;
+                flex-flow: column nowrap;
+            }
+
+            #shader {
+                width: 100%;
+                flex-grow: 1;
+            }
+
+            main {
+                /* Allow children to use `position: absolute` */
+                position: relative;
+                flex-grow: 1;
+                /* See https://css-tricks.com/flexbox-truncated-text/ for why we need this */
+                min-width: 0;
+
+                /* Allow the error log to centre itself */
+                display: flex;
+            }
+
+            #plot {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+
+            #error-log {
+                /* For some reason the text is hidden behind the canvas if we don't do this. */
+                position: relative;
+                margin: auto;
+                align-self: center;
+                max-width: 100%;
+
+                padding: 8px;
+                background-color: lightgrey;
+                color: red;
+                /* Allow the text to wrap if necessary */
+                white-space: pre-wrap;
+            }
+
+            #error-log:empty {
+                /* Because of the padding, this'll still show up as a tiny grey square if we don't hide it. */
+                visibility: hidden;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="sidebar">
+            <label for="threshold-slider">Threshold</label>
+            <!-- TODO: Change the min and max of this depending on the scale. -->
+            <input
+                id="threshold-slider"
+                type="range"
+                min="0.01"
+                max="0.1"
+                step="0.001"
+            />
+
+            <!-- TODO: Maybe autogenerate sliders for uniforms defined by the user? -->
+
+            <label for="shader">Shader</label>
+            <textarea id="shader" cols="60">
+// Draw the line y = sin(x).
+// We use approx_eq rather than `y == sin(x)` to give the line
+// some thickness; internally, it looks like
+// `abs(y - sin(x)) < threshold`, where `threshold` can be
+// configured using the slider above.
+bool test(vec2 point) {
+    return approx_eq(point.y, sin(point.x));
+}</textarea
+            >
+        </div>
+        <main>
+            <canvas id="plot"> </canvas>
+            <pre id="error-log"></pre>
+        </main>
+        <script type="module" src="main.js"></script>
+    </body>
+</html>
