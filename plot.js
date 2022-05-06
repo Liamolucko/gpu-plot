@@ -144,7 +144,7 @@ export default function plot() {
     // Set all our uniforms
     gl.uniform1f(
         gl.getUniformLocation(shaderProgram, "threshold"),
-        parseFloat(thresholdSlider.value) * devicePixelRatio
+        parseFloat(thresholdSlider.value)
     );
 
     // TODO: actually set up a camera system
