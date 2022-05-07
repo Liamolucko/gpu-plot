@@ -73,6 +73,7 @@ initShader(vertexShader, vsSource, { alert: true });
 
 const shaderProgram = gl.createProgram();
 gl.attachShader(shaderProgram, vertexShader);
+gl.attachShader(shaderProgram, fragmentShader);
 
 const fsHeader = `\
     #version 300 es
@@ -127,7 +128,6 @@ export function setupShaderProgram() {
     const success = setupFragmentShader();
     if (!success) return;
 
-    gl.attachShader(shaderProgram, fragmentShader);
     gl.linkProgram(shaderProgram);
 
     if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
@@ -140,7 +140,7 @@ export function setupShaderProgram() {
 // Set up the initial shader program.
 setupShaderProgram();
 
-export default function plot() {
+export default function plot(pos, scale) {
     gl.viewport(0, 0, canvas.width, canvas.height);
 
     clear();
@@ -153,11 +153,10 @@ export default function plot() {
         parseFloat(thresholdSlider.value)
     );
 
-    // TODO: actually set up a camera system
-    gl.uniform2f(gl.getUniformLocation(shaderProgram, "pos"), 0, 0);
+    gl.uniform2f(gl.getUniformLocation(shaderProgram, "pos"), ...pos);
     gl.uniform1f(
         gl.getUniformLocation(shaderProgram, "scale"),
-        1 / (100 * devicePixelRatio)
+        scale / devicePixelRatio
     );
 
     gl.uniform2f(
