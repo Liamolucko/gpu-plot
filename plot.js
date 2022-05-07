@@ -87,21 +87,27 @@ const fsHeader = `\
     // The center of the screen in window space.
     uniform vec2 center;
 
-    bool approx_eq(float a, float b) {
+    // Define some builtin functions for user shaders to use.
+    bool close(float a, float b) {
         return abs(a - b) < threshold;
+    }
+
+    vec3 black_if(bool cond) {
+        if (cond) {
+            return vec3(0.0, 0.0, 0.0);
+        } else {
+            return vec3(1.0, 1.0, 1.0);
+        }
     }
 `;
 
 const fsFooter = `
-    layout(location = 0) out vec4 color;
+    layout(location = 0) out vec4 out_color;
 
     void main() {
         vec2 point = pos + scale * (gl_FragCoord.xy - center);
-        if (test(point)) {
-            color = vec4(0.0, 0.0, 0.0, 1.0);
-        } else {
-            color = vec4(1.0, 1.0, 1.0, 1.0);
-        }
+        out_color.xyz = color(point);
+        out_color.w = 1.0;
     }
 `;
 

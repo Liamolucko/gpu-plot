@@ -3,10 +3,21 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="color-scheme" content="light dark">
         <title>GPU Plotter</title>
         <style>
             * {
                 box-sizing: border-box;
+            }
+
+            :root {
+                --bg-color: lightgrey;
+            }
+
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --bg-color: canvas;
+                }
             }
 
             html {
@@ -23,7 +34,7 @@
             }
 
             #sidebar {
-                background-color: lightgrey;
+                background-color: var(--bg-color);
                 /* don't let this get shrunk no matter what */
                 min-width: max-content;
                 padding: 8px;
@@ -62,7 +73,7 @@
                 max-width: 100%;
 
                 padding: 8px;
-                background-color: lightgrey;
+                background-color: var(--bg-color);
                 color: red;
                 /* Allow the text to wrap if necessary */
                 white-space: pre-wrap;
@@ -91,12 +102,12 @@
             <label for="shader">Shader</label>
             <textarea id="shader" cols="60">
 // Draw the line y = sin(x).
-// We use approx_eq rather than `y == sin(x)` to give the line
+// We use `close` rather than `y == sin(x)` to give the line
 // some thickness; internally, it looks like
 // `abs(y - sin(x)) < threshold`, where `threshold` can be
 // configured using the slider above.
-bool test(vec2 point) {
-    return approx_eq(point.y, sin(point.x));
+vec3 color(vec2 point) {
+    return black_if(close(point.y, sin(point.x)));
 }</textarea
             >
         </div>
