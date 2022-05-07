@@ -18,7 +18,7 @@ shaderTextField.oninput = () => {
     plot(pos, scale);
 };
 
-thresholdSlider.oninput = plot;
+thresholdSlider.oninput = () => plot(pos, scale);
 
 const observer = new ResizeObserver((entries) => {
     for (const entry of entries) {
