@@ -12,22 +12,22 @@ const canvas = document.getElementById("plot");
 const errorLog = document.getElementById("error-log");
 
 const gl = canvas.getContext("webgl2", {
-    alpha: false,
-    depth: false,
-    antialias: true,
+  alpha: false,
+  depth: false,
+  antialias: true,
 });
 
 if (gl === null) {
-    const err = new Error(
-        "Your browser can't run this website, because it doesn't seem to support WebGL 2.",
-    );
-    alert(err);
-    throw err;
+  const err = new Error(
+    "Your browser can't run this website, because it doesn't seem to support WebGL 2.",
+  );
+  alert(err);
+  throw err;
 }
 
 function clear() {
-    gl.clearColor(...BACKGROUND_COLOR, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.clearColor(...BACKGROUND_COLOR, 1.0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
 }
 
 clear();
@@ -38,18 +38,18 @@ const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 /// Sets the source of `shader` to `src` and compiles it.
 /// If `opts.alert` is true, errors will be displayed with `alert` as well as throwing.
 function initShader(shader, src, opts) {
-    gl.shaderSource(shader, src);
-    gl.compileShader(shader);
+  gl.shaderSource(shader, src);
+  gl.compileShader(shader);
 
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        const err = new Error(
-            "Failed to compile shader:\n" + gl.getShaderInfoLog(shader),
-        );
-        if (opts.alert) {
-            alert(err);
-        }
-        throw err;
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    const err = new Error(
+      "Failed to compile shader:\n" + gl.getShaderInfoLog(shader),
+    );
+    if (opts.alert) {
+      alert(err);
     }
+    throw err;
+  }
 }
 
 const vsSource = `\
@@ -113,57 +113,57 @@ const fsFooter = `
 `;
 
 function setupFragmentShader() {
-    const fsSource = fsHeader + shaderTextField.value + fsFooter;
-    try {
-        initShader(fragmentShader, fsSource, { alert: false });
-        errorLog.textContent = "";
-        return true;
-    } catch (err) {
-        errorLog.textContent = err.toString();
-        return false;
-    }
+  const fsSource = fsHeader + shaderTextField.value + fsFooter;
+  try {
+    initShader(fragmentShader, fsSource, { alert: false });
+    errorLog.textContent = "";
+    return true;
+  } catch (err) {
+    errorLog.textContent = err.toString();
+    return false;
+  }
 }
 
 export function setupShaderProgram() {
-    const success = setupFragmentShader();
-    if (!success) return;
+  const success = setupFragmentShader();
+  if (!success) return;
 
-    gl.linkProgram(shaderProgram);
+  gl.linkProgram(shaderProgram);
 
-    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-        errorLog.textContent = "Error: Failed to link shader program:\n" +
-            gl.getProgramInfoLog(shaderProgram);
-    }
+  if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+    errorLog.textContent = "Error: Failed to link shader program:\n" +
+      gl.getProgramInfoLog(shaderProgram);
+  }
 }
 
 // Set up the initial shader program.
 setupShaderProgram();
 
 export default function plot(pos, scale) {
-    gl.viewport(0, 0, canvas.width, canvas.height);
+  gl.viewport(0, 0, canvas.width, canvas.height);
 
-    clear();
+  clear();
 
-    gl.useProgram(shaderProgram);
+  gl.useProgram(shaderProgram);
 
-    // Set all our uniforms
-    gl.uniform1f(
-        gl.getUniformLocation(shaderProgram, "threshold"),
-        parseFloat(thresholdSlider.value),
-    );
+  // Set all our uniforms
+  gl.uniform1f(
+    gl.getUniformLocation(shaderProgram, "threshold"),
+    parseFloat(thresholdSlider.value),
+  );
 
-    gl.uniform2f(gl.getUniformLocation(shaderProgram, "pos"), ...pos);
-    gl.uniform1f(
-        gl.getUniformLocation(shaderProgram, "scale"),
-        scale / devicePixelRatio,
-    );
+  gl.uniform2f(gl.getUniformLocation(shaderProgram, "pos"), ...pos);
+  gl.uniform1f(
+    gl.getUniformLocation(shaderProgram, "scale"),
+    scale / devicePixelRatio,
+  );
 
-    gl.uniform2f(
-        gl.getUniformLocation(shaderProgram, "center"),
-        canvas.width / 2,
-        canvas.height / 2,
-    );
+  gl.uniform2f(
+    gl.getUniformLocation(shaderProgram, "center"),
+    canvas.width / 2,
+    canvas.height / 2,
+  );
 
-    // TODO: actual anti-aliasing, the toggle we set in `getContext` seems to do nothing.
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  // TODO: actual anti-aliasing, the toggle we set in `getContext` seems to do nothing.
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 }
