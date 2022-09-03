@@ -19,7 +19,7 @@ const gl = canvas.getContext("webgl2", {
 
 if (gl === null) {
     const err = new Error(
-        "Your browser can't run this website, because it doesn't seem to support WebGL 2."
+        "Your browser can't run this website, because it doesn't seem to support WebGL 2.",
     );
     alert(err);
     throw err;
@@ -43,7 +43,7 @@ function initShader(shader, src, opts) {
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
         const err = new Error(
-            `Failed to compile shader:\n${gl.getShaderInfoLog(shader)}`
+            "Failed to compile shader:\n" + gl.getShaderInfoLog(shader),
         );
         if (opts.alert) {
             alert(err);
@@ -131,9 +131,8 @@ export function setupShaderProgram() {
     gl.linkProgram(shaderProgram);
 
     if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-        errorLog.textContent = `Error: Failed to link shader program:\n${gl.getProgramInfoLog(
-            shaderProgram
-        )}`;
+        errorLog.textContent = "Error: Failed to link shader program:\n" +
+            gl.getProgramInfoLog(shaderProgram);
     }
 }
 
@@ -150,19 +149,19 @@ export default function plot(pos, scale) {
     // Set all our uniforms
     gl.uniform1f(
         gl.getUniformLocation(shaderProgram, "threshold"),
-        parseFloat(thresholdSlider.value)
+        parseFloat(thresholdSlider.value),
     );
 
     gl.uniform2f(gl.getUniformLocation(shaderProgram, "pos"), ...pos);
     gl.uniform1f(
         gl.getUniformLocation(shaderProgram, "scale"),
-        scale / devicePixelRatio
+        scale / devicePixelRatio,
     );
 
     gl.uniform2f(
         gl.getUniformLocation(shaderProgram, "center"),
         canvas.width / 2,
-        canvas.height / 2
+        canvas.height / 2,
     );
 
     // TODO: actual anti-aliasing, the toggle we set in `getContext` seems to do nothing.
