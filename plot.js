@@ -12,9 +12,10 @@ const canvas = document.getElementById("plot");
 const errorLog = document.getElementById("error-log");
 
 const gl = canvas.getContext("webgl2", {
+  // Turn off these features that we aren't using.
   alpha: false,
   depth: false,
-  antialias: true,
+  antialias: false,
 });
 
 if (gl === null) {
