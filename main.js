@@ -186,6 +186,12 @@ canvas.onpointermove = (ev) => {
     cameraPos[0] = pos[0] - info.pos[0] * scale;
     cameraPos[1] = pos[1] - info.pos[1] * scale;
 
+    // Note that we multiply by the inverse of the change in scale here, since the
+    // scale from `getGestureInfo` (distance between pointers) is the inverse of
+    // `scale`: a higher `scale` means more zoomed out, whereas a higher distance
+    // between pointers means more zoomed in.
+    scale *= prevInfo.scale / info.scale;
+
     plot(cameraPos, scale);
   }
 };
