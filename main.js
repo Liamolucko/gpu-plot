@@ -200,7 +200,9 @@ canvas.onwheel = (ev) => {
   zoomFocus = getCenteredPos(ev);
   targetScale *= 1.001 ** ev.deltaY;
 
-  // Start animating the camera.
-  lastFrame ??= performance.now();
-  requestAnimationFrame(updateCamera);
+  // Start animating the camera, if an animation isn't already running.
+  if (lastFrame === null) {
+    lastFrame = performance.now();
+    requestAnimationFrame(updateCamera);
+  }
 };
