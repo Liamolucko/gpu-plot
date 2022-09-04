@@ -191,6 +191,8 @@ canvas.onpointermove = (ev) => {
     // `scale`: a higher `scale` means more zoomed out, whereas a higher distance
     // between pointers means more zoomed in.
     scale *= prevInfo.scale / info.scale;
+    // Actually stay at the new scale.
+    targetScale = scale;
 
     plot(cameraPos, scale);
   }
