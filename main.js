@@ -163,15 +163,18 @@ function getGestureInfo() {
 const pointers = new Map();
 
 canvas.onpointerdown = (ev) => {
+  ev.preventDefault();
   if (pointers.size < 2) {
     pointers.set(ev.pointerId, getCenteredPos(ev));
   }
 };
 canvas.onpointerup = canvas.onpointercancel = (ev) => {
+  ev.preventDefault();
   pointers.delete(ev.pointerId);
 };
 
 canvas.onpointermove = (ev) => {
+  ev.preventDefault();
   if (pointers.has(ev.pointerId)) {
     const prevInfo = getGestureInfo();
     pointers.set(ev.pointerId, getCenteredPos(ev));
@@ -199,6 +202,7 @@ canvas.onpointermove = (ev) => {
 };
 
 canvas.onwheel = (ev) => {
+  ev.preventDefault();
   zoomFocus = getCenteredPos(ev);
   targetScale *= 1.001 ** ev.deltaY;
 
